@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  MySqsFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Handler: lambda_handler
+      Code:
+        S3Bucket: test-s3-backup
+        S3Key: Test_function_CF.zip
+      Role: !GetAtt 
+        - MySqsFunctionRole
+        - Arn
+      Runtime: python3.8
+      Tags:
+        - Value: SAM
+          Key: 'lambda:createdBy'
+  MySqsFunctionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole'
+      Tags:
+        - Value: SAM
+          Key: 'lambda:createdBy'
+  MySqsFunctionMySQSEvent:
+    Type: 'AWS::Lambda::EventSourceMapping'
+    Properties:
+      EventSourceArn: !GetAtt SQSQ3OKZ7.Arn
+      FunctionName: !Ref MySqsFunction
+  SNSTopic:
+    Type: 'AWS::SNS::Topic'
+    Properties:
+      TopicName: !Sub 'S3ObjectChanged-Topic-${AWS::AccountId}'
+  SQSQ3OKZ7:
+    Type: 'AWS::SQS::Queue'
+    Properties: {}
+  SNSS2PQDB:
+    Type: 'AWS::SNS::Subscription'
+    Properties:
+      Endpoint: !GetAtt 
+        - SQSQ3OKZ7
+        - Arn
+      Protocol: sqs
+      TopicArn: !Ref SNSTopic
+  S3B3Z6AJ:
+    Type: 'AWS::S3::Bucket'
+    Properties: 
+        AccessControl: Private
+        LifecycleConfiguration:
+            Rules:
+            - Id: GlacierRule
+              Prefix: glacier
+              Status: Enabled
+              ExpirationInDays: 365
+              Transitions:
+                - TransitionInDays: 1
+                  StorageClass: GLACIER
+        VersioningConfiguration:
+            Status: Enabled
+    
