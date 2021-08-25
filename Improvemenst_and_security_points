@@ -1,0 +1,51 @@
+# Improvements and some security points
+
+Enhacements are always there in a product 
+
+So in our use case we can improve and manage the security like:
+	All the public access should be removed from the s3, lamda and sqs
+	Strict policies and permisions are given to the roles only.
+	For ex:
+		We can give read only acces on the bucket and on lambda
+		Also particular access or role is provided to lamda so that it can write messages to that particlar bucket only not on other.
+		Can create all these things in a virtual private cloud (vpc), so that lambda and and buckets are not exposed to the world
+		Security groups and subnets are used and associate ports are open on that security group like 
+	for exp:
+		we can set inbound and outbound rules on the security group 
+		so that we can control and manages the traffic according to our need
+		We can open only 443 ie https port only not http port
+		
+	
+For Improvements part we can do following things:
+we can use cloudwatch and set an alarms to that.
+	So if anytime lamda fails due to any issue lamda triggers the logs to the cloudwatch and cloudwatch sends the
+	Alarms to the partucluar concened person saying..hey something went wrong with appropriate error messages.
+	
+	we can collect logs of every event and message triggered
+	This is can be further use for analysis part
+	like we can do analysis:
+		how and in what time interval lamda is triggered 
+		
+	Also s3 logs can be collected for futher enchanchements
+	
+	Also cost analysis can be done
+	Like we can set up monitoring kind of things that can chekcs for the cost and for the traffic control parts through networks 
+	and metrices that are already given.
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
